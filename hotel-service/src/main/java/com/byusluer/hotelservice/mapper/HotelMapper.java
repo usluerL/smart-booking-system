@@ -3,7 +3,6 @@ package com.byusluer.hotelservice.mapper;
 import com.byusluer.hotelservice.domain.Hotel;
 import com.byusluer.hotelservice.dto.HotelDto;
 import org.mapstruct.Mapper;
-import org.mapstruct.factory.Mappers;
 
 import java.util.List;
 
