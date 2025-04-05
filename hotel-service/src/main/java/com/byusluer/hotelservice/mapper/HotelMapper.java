@@ -13,7 +13,6 @@ public class HotelMapper {
 
     public Hotel toEntity(HotelDto dto) {
         if (dto == null) return null;
-
         Hotel hotel = new Hotel();
         hotel.setId(dto.getId());
         hotel.setName(dto.getName());
