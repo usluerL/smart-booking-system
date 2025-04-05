@@ -2,6 +2,7 @@ package com.byusluer.hotelservice.service;
 
 import com.byusluer.hotelservice.domain.Hotel;
 import com.byusluer.hotelservice.dto.HotelDto;
+import com.byusluer.hotelservice.exception.HotelNotFoundException;
 import com.byusluer.hotelservice.mapper.HotelMapper;
 import com.byusluer.hotelservice.repository.HotelRepository;
 import lombok.RequiredArgsConstructor;
@@ -27,7 +28,7 @@ public class HotelServiceImpl implements HotelService{
     public HotelDto getHotelById(Long id) {
        return hotelRepository.findById(id)
                 .map(hotelMapper::toDto)
-                .orElseThrow(() -> new RuntimeException("Hotel not found"));
+                .orElseThrow(() -> new HotelNotFoundException(id));
     }
 
     @Override
@@ -38,7 +39,7 @@ public class HotelServiceImpl implements HotelService{
     @Override
     public HotelDto updateHotel(Long id, HotelDto hotelDto) {
         Hotel hotel = hotelRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Hotel not found"));
+                .orElseThrow(() -> new HotelNotFoundException(id));
         hotel.setName(hotelDto.getName());
         hotel.setCity(hotelDto.getCity());
         hotel.setAddress(hotelDto.getAddress());
@@ -49,6 +50,5 @@ public class HotelServiceImpl implements HotelService{
     @Override
     public void deleteHotel(Long id) {
         hotelRepository.deleteById(id);
-
     }
 }
