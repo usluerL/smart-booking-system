@@ -1,10 +1,11 @@
-package com.byusluer.hotelservice.service;
+package com.byusluer.hotelservice.service.impl;
 
 import com.byusluer.hotelservice.domain.Hotel;
 import com.byusluer.hotelservice.dto.HotelDto;
 import com.byusluer.hotelservice.exception.HotelNotFoundException;
 import com.byusluer.hotelservice.mapper.HotelMapper;
 import com.byusluer.hotelservice.repository.HotelRepository;
+import com.byusluer.hotelservice.service.HotelService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -12,7 +13,7 @@ import java.util.List;
 
 @Service
 @RequiredArgsConstructor
-public class HotelServiceImpl implements HotelService{
+public class HotelServiceImpl implements HotelService {
 
 
     private final HotelRepository hotelRepository;
