@@ -1,5 +1,6 @@
 package com.byusluer.hotelservice.domain;
 
+import entity.BaseEntity;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -9,7 +10,7 @@ import lombok.*;
 @NoArgsConstructor
 @Builder
 @Entity
-public class Room extends BaseEntity{
+public class Room extends BaseEntity {
     @Column(nullable = false)
     private String roomNumber;
 

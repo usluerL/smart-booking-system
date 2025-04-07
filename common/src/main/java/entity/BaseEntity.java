@@ -1,4 +1,4 @@
-package com.byusluer.hotelservice.domain;
+package entity;
 
 import jakarta.persistence.*;
 import lombok.Getter;

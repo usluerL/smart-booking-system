@@ -1,5 +1,6 @@
 package com.byusluer.hotelservice.domain;
 
+import entity.BaseEntity;
 import jakarta.persistence.Entity;
 import lombok.*;
 
