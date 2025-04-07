@@ -2,6 +2,7 @@ package com.byusluer.hotelservice.controller;
 
 import com.byusluer.hotelservice.dto.RoomDto;
 import com.byusluer.hotelservice.service.RoomService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -18,13 +19,13 @@ public class RoomController {
     private final RoomService roomService;
 
     @PostMapping
-    public ResponseEntity<RoomDto> create(@RequestBody RoomDto dto) {
+    public ResponseEntity<RoomDto> create(@RequestBody @Valid RoomDto dto) {
         RoomDto created = roomService.create(dto);
         return ResponseEntity.status(HttpStatus.CREATED).body(created);
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<RoomDto> update(@PathVariable Long id, @RequestBody RoomDto dto) {
+    public ResponseEntity<RoomDto> update(@PathVariable Long id, @RequestBody @Valid RoomDto dto) {
         return ResponseEntity.ok(roomService.update(id, dto));
     }
 
