@@ -27,6 +27,20 @@ public class HotelExceptionHandler {
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
     }
 
+    @ExceptionHandler(HotelAlreadyExistsException.class)
+    public ResponseEntity<ApiErrorResponse> handleHotelAlreadyExists(HotelAlreadyExistsException ex,
+                                                                     HttpServletRequest request) {
+        ApiErrorResponse response = ApiErrorResponse.builder()
+                .timestamp(LocalDateTime.now())
+                .status(HttpStatus.BAD_REQUEST.value())
+                .error("Hotel Already Exists")
+                .message(ex.getMessage())
+                .path(request.getRequestURI())
+                .build();
+
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
+    }
+
     @ExceptionHandler(RoomNotFoundException.class)
     public ResponseEntity<ApiErrorResponse> handleRoomNotFound(RoomNotFoundException ex, HttpServletRequest request) {
         ApiErrorResponse response = ApiErrorResponse.builder()
@@ -38,6 +52,20 @@ public class HotelExceptionHandler {
                 .build();
 
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
+    }
+
+    @ExceptionHandler(DuplicateRoomNumberException.class)
+    public ResponseEntity<ApiErrorResponse> handleDuplicateRoom(DuplicateRoomNumberException ex,
+                                                                HttpServletRequest request) {
+        ApiErrorResponse response = ApiErrorResponse.builder()
+                .timestamp(LocalDateTime.now())
+                .status(HttpStatus.BAD_REQUEST.value())
+                .error("Duplicate Room Number")
+                .message(ex.getMessage())
+                .path(request.getRequestURI())
+                .build();
+
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
     }
 
     @ExceptionHandler(MethodArgumentNotValidException.class)

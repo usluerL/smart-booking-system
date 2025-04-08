@@ -2,6 +2,7 @@ package com.byusluer.hotelservice.service.impl;
 
 import com.byusluer.hotelservice.domain.Hotel;
 import com.byusluer.hotelservice.dto.HotelDto;
+import com.byusluer.hotelservice.exception.HotelAlreadyExistsException;
 import com.byusluer.hotelservice.exception.HotelNotFoundException;
 import com.byusluer.hotelservice.mapper.HotelMapper;
 import com.byusluer.hotelservice.repository.HotelRepository;
@@ -21,6 +22,9 @@ public class HotelServiceImpl implements HotelService {
 
     @Override
     public HotelDto createHotel(HotelDto hotelDto) {
+        if (hotelRepository.existsByCityAndAddress(hotelDto.getCity(), hotelDto.getAddress())) {
+            throw new HotelAlreadyExistsException(hotelDto.getCity(), hotelDto.getAddress());
+        }
         Hotel hotel = hotelMapper.toEntity(hotelDto);
         return hotelMapper.toDto(hotelRepository.save(hotel));
     }
