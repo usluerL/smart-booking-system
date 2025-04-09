@@ -69,4 +69,12 @@ public class RoomServiceImpl implements RoomService {
         return roomMapper.toDtoList(roomRepository.findAll());
     }
 
+    @Override
+    public void updateAvailability(Long id, boolean available) {
+        Room room = roomRepository.findById(id)
+                .orElseThrow(() -> new RoomNotFoundException(id));
+        room.setAvailable(available);
+        roomRepository.save(room);
+    }
+
 }

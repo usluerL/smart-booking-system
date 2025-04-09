@@ -39,6 +39,12 @@ public class RoomController {
         return ResponseEntity.ok(roomService.getAll());
     }
 
+    @PutMapping("/{id}/availability")
+    public ResponseEntity<Void> updateAvailability(@PathVariable Long id, @RequestParam boolean available) {
+        roomService.updateAvailability(id, available);
+        return ResponseEntity.noContent().build();
+    }
+
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> delete(@PathVariable Long id) {
         roomService.delete(id);

@@ -12,4 +12,5 @@ public interface RoomService {
     RoomDto getById(Long id);
     List<RoomDto> getAll();
 
+    void updateAvailability(Long id, boolean available);
 }

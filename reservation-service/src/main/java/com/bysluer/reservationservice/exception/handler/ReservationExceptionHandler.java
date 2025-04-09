@@ -20,7 +20,8 @@ public class ReservationExceptionHandler{
             HotelNotFoundException.class,
             RoomNotFoundException.class,
             RoomNotAvailableException.class,
-            RoomHotelMismatchException.class
+            RoomHotelMismatchException.class,
+            InvalidReservationDateException.class
     })
     public ResponseEntity<ApiErrorResponse> handleDomainExceptions(RuntimeException ex, HttpServletRequest request) {
         ApiErrorResponse response = ApiErrorResponse.builder()
