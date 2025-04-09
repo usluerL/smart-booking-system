@@ -18,5 +18,13 @@ logging:
   level:
     org.hibernate.SQL: DEBUG
     org.hibernate.type.descriptor.sql: TRACE
+
+client:
+  room-service:
+    url: http://localhost:8080
+  hotel-service:
+    url: http://localhost:8080
+
 server:
   port: 8082
+
