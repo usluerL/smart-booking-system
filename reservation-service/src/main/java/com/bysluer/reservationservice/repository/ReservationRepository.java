@@ -7,4 +7,10 @@ import java.time.LocalDate;
 
 public interface ReservationRepository extends JpaRepository<Reservation, Long> {
     boolean existsByRoomIdAndCheckInLessThanAndCheckOutGreaterThan(Long roomId, LocalDate checkOut, LocalDate checkIn);
+    boolean existsByRoomIdAndCheckInLessThanAndCheckOutGreaterThanAndIdNot(
+            Long roomId,
+            LocalDate checkOut,
+            LocalDate checkIn,
+            Long id
+    );
 }

@@ -2,15 +2,11 @@ package com.bysluer.reservationservice.service.impl;
 
 import com.bysluer.reservationservice.client.HotelClient;
 import com.bysluer.reservationservice.client.RoomClient;
-import com.bysluer.reservationservice.dto.HotelDto;
 import com.bysluer.reservationservice.dto.ReservationDto;
 import com.bysluer.reservationservice.dto.RoomDto;
 import com.bysluer.reservationservice.entity.Reservation;
 import com.bysluer.reservationservice.enums.ReservationStatus;
-import com.bysluer.reservationservice.exception.HotelNotFoundException;
-import com.bysluer.reservationservice.exception.RoomHotelMismatchException;
-import com.bysluer.reservationservice.exception.RoomNotAvailableException;
-import com.bysluer.reservationservice.exception.RoomNotFoundException;
+import com.bysluer.reservationservice.exception.*;
 import com.bysluer.reservationservice.exception.handler.InvalidReservationDateException;
 import com.bysluer.reservationservice.exception.handler.ReservationDateConflictException;
 import com.bysluer.reservationservice.mapper.ReservationMapper;
@@ -36,10 +32,9 @@ public class ReservationServiceImpl implements ReservationService {
     @Transactional
     @Override
     public ReservationDto createReservation(ReservationDto dto) {
-        HotelDto hotelDto;
         RoomDto roomDto;
         try {
-            hotelDto = hotelClient.getHotelById(dto.getHotelId());
+            hotelClient.getHotelById(dto.getHotelId());
         } catch (Exception ex) {
             throw new HotelNotFoundException(dto.getHotelId());
         }
@@ -96,7 +91,7 @@ public class ReservationServiceImpl implements ReservationService {
     @Override
     public ReservationDto getReservationById(Long id) {
         Reservation res = reservationRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Reservation not found"));
+                .orElseThrow(() -> new ReservationNotFoundException(id));
         return ReservationMapper.toDto(res);
     }
 
@@ -111,7 +106,14 @@ public class ReservationServiceImpl implements ReservationService {
     @Override
     public ReservationDto updateReservation(Long id, ReservationDto dto) {
         Reservation existing = reservationRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Reservation not found"));
+                .orElseThrow(() -> new ReservationNotFoundException(id));
+
+        boolean conflict = reservationRepository.existsByRoomIdAndCheckInLessThanAndCheckOutGreaterThanAndIdNot(
+                existing.getRoomId(), dto.getCheckOut(), dto.getCheckIn(), id
+        );
+        if (conflict) {
+            throw new ReservationDateConflictException(dto.getRoomId(), dto.getCheckIn(), dto.getCheckOut());
+        }
 
         existing.setCheckIn(dto.getCheckIn());
         existing.setCheckOut(dto.getCheckOut());
@@ -127,6 +129,36 @@ public class ReservationServiceImpl implements ReservationService {
 
     @Override
     public void deleteReservation(Long id) {
+        Reservation existing = reservationRepository.findById(id)
+                .orElseThrow(() -> new ReservationNotFoundException(id));
+        var roomId = existing.getRoomId();
         reservationRepository.deleteById(id);
+        try {
+            roomClient.updateAvailability(roomId, true);
+        } catch (Exception e) {
+            log.error("Failed to update room availability to true for roomId {} after deletion: {}", roomId, e.getMessage());
+            // fallback or retry will be added.
+
+        }
+    }
+
+    @Override
+    public ReservationDto updateReservationStatus(Long reservationId, ReservationStatus newStatus) {
+        Reservation reservation = reservationRepository.findById(reservationId)
+                .orElseThrow(() -> new ReservationNotFoundException(reservationId));
+        if (reservation.getStatus().isCancelled()) {
+            throw new IllegalStateException("Cancelled reservation cannot be updated");
+        }
+        if (newStatus.isCancelled()){
+            try {
+                roomClient.updateAvailability(reservation.getRoomId(), true);
+            } catch (Exception ex) {
+                log.warn("Room availability update failed for roomId {}: {}", reservation.getRoomId(), ex.getMessage());
+            }
+        }
+        reservation.setStatus(newStatus);
+        reservationRepository.save(reservation);
+
+        return ReservationMapper.toDto(reservation);
     }
 }
