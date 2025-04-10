@@ -6,6 +6,7 @@ import com.bysluer.reservationservice.dto.ReservationDto;
 import com.bysluer.reservationservice.dto.RoomDto;
 import com.bysluer.reservationservice.entity.Reservation;
 import com.bysluer.reservationservice.enums.ReservationStatus;
+import com.bysluer.reservationservice.event.ReservationCreatedEvent;
 import com.bysluer.reservationservice.exception.*;
 import com.bysluer.reservationservice.exception.handler.InvalidReservationDateException;
 import com.bysluer.reservationservice.exception.handler.ReservationDateConflictException;
@@ -15,6 +16,7 @@ import com.bysluer.reservationservice.service.ReservationService;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
@@ -28,6 +30,7 @@ public class ReservationServiceImpl implements ReservationService {
     private final ReservationRepository reservationRepository;
     private final RoomClient roomClient;
     private final HotelClient hotelClient;
+    private final KafkaTemplate<String, Object> kafkaTemplate;
 
     @Transactional
     @Override
@@ -78,6 +81,7 @@ public class ReservationServiceImpl implements ReservationService {
                 .build();
 
         reservationRepository.save(reservation);
+        publishReservationCreatedEvent(reservation);
         try {
             roomClient.updateAvailability(dto.getRoomId(), false);
         } catch (Exception e) {
@@ -149,7 +153,7 @@ public class ReservationServiceImpl implements ReservationService {
         if (reservation.getStatus().isCancelled()) {
             throw new IllegalStateException("Cancelled reservation cannot be updated");
         }
-        if (newStatus.isCancelled()){
+        if (newStatus.isCancelled()) {
             try {
                 roomClient.updateAvailability(reservation.getRoomId(), true);
             } catch (Exception ex) {
@@ -161,4 +165,19 @@ public class ReservationServiceImpl implements ReservationService {
 
         return ReservationMapper.toDto(reservation);
     }
+
+    private void publishReservationCreatedEvent(Reservation reservation) {
+        ReservationCreatedEvent event = ReservationCreatedEvent.builder()
+                .reservationId(reservation.getId())
+                .hotelId(reservation.getHotelId())
+                .roomId(reservation.getRoomId())
+                .checkIn(reservation.getCheckIn())
+                .checkOut(reservation.getCheckOut())
+                .totalPrice(reservation.getTotalPrice())
+                .status(reservation.getStatus().name())
+                .build();
+
+        kafkaTemplate.send("reservation-created", event);
+    }
+
 }
