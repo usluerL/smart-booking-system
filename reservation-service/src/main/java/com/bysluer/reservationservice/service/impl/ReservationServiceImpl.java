@@ -6,7 +6,9 @@ import com.bysluer.reservationservice.dto.ReservationDto;
 import com.bysluer.reservationservice.dto.RoomDto;
 import com.bysluer.reservationservice.entity.Reservation;
 import com.bysluer.reservationservice.enums.ReservationStatus;
-import com.bysluer.reservationservice.event.ReservationCreatedEvent;
+import com.bysluer.reservationservice.event.ReservationEvent;
+import com.bysluer.reservationservice.event.ReservationEventFactory;
+import com.bysluer.reservationservice.event.publisher.ReservationEventPublisher;
 import com.bysluer.reservationservice.exception.*;
 import com.bysluer.reservationservice.exception.handler.InvalidReservationDateException;
 import com.bysluer.reservationservice.exception.handler.ReservationDateConflictException;
@@ -30,7 +32,8 @@ public class ReservationServiceImpl implements ReservationService {
     private final ReservationRepository reservationRepository;
     private final RoomClient roomClient;
     private final HotelClient hotelClient;
-    private final KafkaTemplate<String, Object> kafkaTemplate;
+    private final ReservationEventPublisher publisher;
+
 
     @Transactional
     @Override
@@ -81,7 +84,7 @@ public class ReservationServiceImpl implements ReservationService {
                 .build();
 
         reservationRepository.save(reservation);
-        publishReservationCreatedEvent(reservation);
+        publisher.publishEvent(ReservationEventFactory.create(reservation));
         try {
             roomClient.updateAvailability(dto.getRoomId(), false);
         } catch (Exception e) {
@@ -128,7 +131,10 @@ public class ReservationServiceImpl implements ReservationService {
 
         existing.setStatus(dto.getStatus() != null ? dto.getStatus() : existing.getStatus());
 
-        return ReservationMapper.toDto(reservationRepository.save(existing));
+        Reservation reservation = reservationRepository.save(existing);
+        publisher.publishEvent(ReservationEventFactory.create(reservation));
+
+        return ReservationMapper.toDto(reservation);
     }
 
     @Override
@@ -142,8 +148,14 @@ public class ReservationServiceImpl implements ReservationService {
         } catch (Exception e) {
             log.error("Failed to update room availability to true for roomId {} after deletion: {}", roomId, e.getMessage());
             // fallback or retry will be added.
-
         }
+
+
+        existing.setStatus(ReservationStatus.CANCELLED);
+        ReservationEvent event = ReservationEventFactory.create(existing);
+        publisher.publishEvent(event);
+
+        log.info("❌ Reservation with id {} deleted and cancellation event published", id);
     }
 
     @Override
@@ -165,19 +177,4 @@ public class ReservationServiceImpl implements ReservationService {
 
         return ReservationMapper.toDto(reservation);
     }
-
-    private void publishReservationCreatedEvent(Reservation reservation) {
-        ReservationCreatedEvent event = ReservationCreatedEvent.builder()
-                .reservationId(reservation.getId())
-                .hotelId(reservation.getHotelId())
-                .roomId(reservation.getRoomId())
-                .checkIn(reservation.getCheckIn())
-                .checkOut(reservation.getCheckOut())
-                .totalPrice(reservation.getTotalPrice())
-                .status(reservation.getStatus().name())
-                .build();
-
-        kafkaTemplate.send("reservation-created", event);
-    }
-
 }
