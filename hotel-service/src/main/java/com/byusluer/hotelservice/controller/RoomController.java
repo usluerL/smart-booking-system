@@ -23,6 +23,10 @@ public class RoomController {
         RoomDto created = roomService.create(dto);
         return ResponseEntity.status(HttpStatus.CREATED).body(created);
     }
+    @GetMapping
+    public List<RoomDto> getRoomsByHotelId(@RequestParam("hotelId") Long hotelId) {
+        return roomService.getRoomsByHotelId(hotelId);
+    }
 
     @PutMapping("/{id}")
     public ResponseEntity<RoomDto> update(@PathVariable Long id, @RequestBody @Valid RoomDto dto) {
@@ -34,10 +38,12 @@ public class RoomController {
         return ResponseEntity.ok(roomService.getById(id));
     }
 
-    @GetMapping
+    @GetMapping("/all")
     public ResponseEntity<List<RoomDto>> getAll() {
         return ResponseEntity.ok(roomService.getAll());
     }
+
+
 
     @PutMapping("/{id}/availability")
     public ResponseEntity<Void> updateAvailability(@PathVariable Long id, @RequestParam boolean available) {

@@ -12,6 +12,8 @@ public interface ReservationService {
 
     List<ReservationDto> getAllReservations();
 
+    List<ReservationDto> getReservationsByHotelId(Long hotelId);
+
     ReservationDto updateReservation(Long id, ReservationDto dto);
 
     void cancelReservation(Long id);

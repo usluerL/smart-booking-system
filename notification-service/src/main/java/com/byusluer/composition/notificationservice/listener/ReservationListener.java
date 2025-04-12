@@ -1,8 +1,7 @@
-package com.byusluer.notificationservice.listener;
+package com.byusluer.composition.notificationservice.listener;
 
-import com.byusluer.notificationservice.dto.ReservationCreatedEvent;
-import com.byusluer.notificationservice.event.ReservationEvent;
-import com.byusluer.notificationservice.event.dispatcher.ReservationEventDispatcher;
+import com.byusluer.composition.notificationservice.event.ReservationEvent;
+import com.byusluer.composition.notificationservice.event.dispatcher.ReservationEventDispatcher;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

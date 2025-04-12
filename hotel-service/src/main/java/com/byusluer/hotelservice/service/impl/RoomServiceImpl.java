@@ -14,6 +14,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -67,6 +68,15 @@ public class RoomServiceImpl implements RoomService {
     @Override
     public List<RoomDto> getAll() {
         return roomMapper.toDtoList(roomRepository.findAll());
+    }
+
+    @Override
+    public List<RoomDto> getRoomsByHotelId(Long hotelId) {
+        return roomRepository.findByHotelId(hotelId)
+                .stream()
+                .map(roomMapper::toDto)
+                .collect(Collectors.toList());
+
     }
 
     @Override

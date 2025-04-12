@@ -1,9 +1,9 @@
-package com.byusluer.notificationservice.event.dispatcher;
+package com.byusluer.composition.notificationservice.event.dispatcher;
 
 
-import com.byusluer.notificationservice.dto.ReservationStatus;
-import com.byusluer.notificationservice.event.ReservationEvent;
-import com.byusluer.notificationservice.event.ReservationEventHandler;
+import com.byusluer.composition.notificationservice.dto.ReservationStatus;
+import com.byusluer.composition.notificationservice.event.ReservationEvent;
+import com.byusluer.composition.notificationservice.event.ReservationEventHandler;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
 

@@ -111,6 +111,14 @@ public class ReservationServiceImpl implements ReservationService {
     }
 
     @Override
+    public List<ReservationDto> getReservationsByHotelId(Long hotelId) {
+        return reservationRepository.findByHotelId(hotelId)
+                .stream()
+                .map(ReservationMapper::toDto)
+                .toList();
+    }
+
+    @Override
     public ReservationDto updateReservation(Long id, ReservationDto dto) {
         Reservation existing = reservationRepository.findById(id)
                 .orElseThrow(() -> new ReservationNotFoundException(id));

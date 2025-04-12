@@ -1,5 +1,7 @@
-package com.byusluer.notificationservice.dto;
+package com.byusluer.composition.notificationservice.event;
 
+
+import com.byusluer.composition.notificationservice.dto.ReservationStatus;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -9,16 +11,16 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 
 @Data
+@Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@Builder
-public class ReservationCreatedEvent {
+public class ReservationEvent {
+
     private Long reservationId;
     private Long hotelId;
     private Long roomId;
     private LocalDate checkIn;
     private LocalDate checkOut;
     private BigDecimal totalPrice;
-    private String status;
+    private ReservationStatus status;
 }
-

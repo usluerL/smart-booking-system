@@ -25,9 +25,14 @@ public class ReservationController {
         return ResponseEntity.ok(reservationService.getReservationById(id));
     }
 
-    @GetMapping
+    @GetMapping("/all")
     public ResponseEntity<List<ReservationDto>> getAllReservations() {
         return ResponseEntity.ok(reservationService.getAllReservations());
+    }
+
+    @GetMapping
+    public ResponseEntity<List<ReservationDto>> getReservationsByHotelId(@RequestParam("hotelId") Long hotelId) {
+        return ResponseEntity.ok(reservationService.getReservationsByHotelId(hotelId));
     }
 
     @PutMapping("/{id}")
