@@ -6,7 +6,6 @@ import com.bysluer.reservationservice.dto.ReservationDto;
 import com.bysluer.reservationservice.dto.RoomDto;
 import com.bysluer.reservationservice.entity.Reservation;
 import com.bysluer.reservationservice.enums.ReservationStatus;
-import com.bysluer.reservationservice.event.ReservationEvent;
 import com.bysluer.reservationservice.event.ReservationEventFactory;
 import com.bysluer.reservationservice.event.publisher.ReservationEventPublisher;
 import com.bysluer.reservationservice.exception.*;
@@ -18,8 +17,9 @@ import com.bysluer.reservationservice.service.ReservationService;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.support.TransactionSynchronization;
+import org.springframework.transaction.support.TransactionSynchronizationManager;
 
 import java.math.BigDecimal;
 import java.time.temporal.ChronoUnit;
@@ -84,7 +84,7 @@ public class ReservationServiceImpl implements ReservationService {
                 .build();
 
         reservationRepository.save(reservation);
-        publisher.publishEvent(ReservationEventFactory.create(reservation));
+        publishEventAfterCommit(reservation);
         try {
             roomClient.updateAvailability(dto.getRoomId(), false);
         } catch (Exception e) {
@@ -132,9 +132,30 @@ public class ReservationServiceImpl implements ReservationService {
         existing.setStatus(dto.getStatus() != null ? dto.getStatus() : existing.getStatus());
 
         Reservation reservation = reservationRepository.save(existing);
-        publisher.publishEvent(ReservationEventFactory.create(reservation));
+        publishEventAfterCommit(reservation);
+
 
         return ReservationMapper.toDto(reservation);
+    }
+
+    @Override
+    public void cancelReservation(Long id) {
+        Reservation existing = reservationRepository.findById(id)
+                .orElseThrow(() -> new ReservationNotFoundException(id));
+        if (existing.getStatus().isCancelled()) return;
+        var roomId = existing.getRoomId();
+        existing.setStatus(ReservationStatus.CANCELLED);
+        reservationRepository.save(existing);
+        try {
+            roomClient.updateAvailability(roomId, true);
+        } catch (Exception e) {
+            log.error("Failed to update room availability to true for roomId {} after cancelling: {}", roomId, e.getMessage());
+            // fallback or retry will be added.
+        }
+
+        publishEventAfterCommit(existing);
+
+        log.info("❌ Reservation with id {} cancelled and cancellation event published", id);
     }
 
     @Override
@@ -146,16 +167,9 @@ public class ReservationServiceImpl implements ReservationService {
         try {
             roomClient.updateAvailability(roomId, true);
         } catch (Exception e) {
-            log.error("Failed to update room availability to true for roomId {} after deletion: {}", roomId, e.getMessage());
+            log.error("Failed to update room availability to true for roomId {} after deletion reservation: {}", roomId, e.getMessage());
             // fallback or retry will be added.
         }
-
-
-        existing.setStatus(ReservationStatus.CANCELLED);
-        ReservationEvent event = ReservationEventFactory.create(existing);
-        publisher.publishEvent(event);
-
-        log.info("❌ Reservation with id {} deleted and cancellation event published", id);
     }
 
     @Override
@@ -177,4 +191,15 @@ public class ReservationServiceImpl implements ReservationService {
 
         return ReservationMapper.toDto(reservation);
     }
+
+
+    private void publishEventAfterCommit(Reservation reservation) {
+        TransactionSynchronizationManager.registerSynchronization(new TransactionSynchronization() {
+            @Override
+            public void afterCommit() {
+                publisher.publishEvent(ReservationEventFactory.create(reservation));
+            }
+        });
+    }
+
 }
