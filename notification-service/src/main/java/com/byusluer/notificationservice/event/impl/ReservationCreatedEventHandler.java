@@ -1,7 +1,7 @@
-package com.byusluer.composition.notificationservice.event.impl;
+package com.byusluer.notificationservice.event.impl;
 
-import com.byusluer.composition.notificationservice.event.ReservationEvent;
-import com.byusluer.composition.notificationservice.event.ReservationEventHandler;
+import com.byusluer.notificationservice.event.ReservationEvent;
+import com.byusluer.notificationservice.event.ReservationEventHandler;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 

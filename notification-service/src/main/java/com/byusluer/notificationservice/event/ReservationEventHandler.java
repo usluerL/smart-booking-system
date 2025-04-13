@@ -1,4 +1,4 @@
-package com.byusluer.composition.notificationservice.event;
+package com.byusluer.notificationservice.event;
 
 
 public interface ReservationEventHandler {

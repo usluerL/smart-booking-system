@@ -1,4 +1,4 @@
-package com.byusluer.composition.notificationservice.dto;
+package com.byusluer.notificationservice.dto;
 
 public enum ReservationStatus {
     CONFIRMED,
