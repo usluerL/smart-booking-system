@@ -23,7 +23,7 @@ spring:
           predicates:
             - Path=/notifications/**
         - id: booking-composition-service
-          uri: http://localhost:8090
+          uri: lb://BOOKING-COMPOSITION-SERVICE
           predicates:
             - Path=/compose/**
 
