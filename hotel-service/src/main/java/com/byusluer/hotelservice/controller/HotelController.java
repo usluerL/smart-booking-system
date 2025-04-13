@@ -4,16 +4,28 @@ import com.byusluer.hotelservice.dto.HotelDto;
 import com.byusluer.hotelservice.service.HotelService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.cloud.context.config.annotation.RefreshScope;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+@RefreshScope
 @RestController
 @RequestMapping("/hotels")
 @RequiredArgsConstructor
 public class HotelController {
     private final HotelService hotelService;
+
+    @Value("${hotel.welcome-message}")
+    private String welcomeMessage;
+
+    @GetMapping("/welcome")
+    public String getWelcomeMessage() {
+        return welcomeMessage;
+    }
 
     @PostMapping
     public ResponseEntity<HotelDto> createHotel(@RequestBody @Valid HotelDto hotelDto) {

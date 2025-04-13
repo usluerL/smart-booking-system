@@ -1,6 +1,6 @@
 spring:
   application:
-    name: HOTEL-SERVICE
+    name: hotel-service
 
   datasource:
     url: jdbc:postgresql://localhost:5432/smart_booking
@@ -29,3 +29,7 @@ eureka:
 
 server:
   port: 8081
+
+
+hotel:
+  welcome-message: "Welcome to Smart Booking Hotel Service-runtime test-deneme"
