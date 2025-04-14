@@ -13,6 +13,7 @@ import com.bysluer.reservationservice.exception.handler.InvalidReservationDateEx
 import com.bysluer.reservationservice.exception.handler.ReservationDateConflictException;
 import com.bysluer.reservationservice.mapper.ReservationMapper;
 import com.bysluer.reservationservice.repository.ReservationRepository;
+import com.bysluer.reservationservice.service.AsyncRoomNotifier;
 import com.bysluer.reservationservice.service.ReservationService;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
@@ -33,6 +34,7 @@ public class ReservationServiceImpl implements ReservationService {
     private final RoomClient roomClient;
     private final HotelClient hotelClient;
     private final ReservationEventPublisher publisher;
+    private final AsyncRoomNotifier asyncRoomNotifier;
 
 
     @Transactional
@@ -84,13 +86,9 @@ public class ReservationServiceImpl implements ReservationService {
                 .build();
 
         reservationRepository.save(reservation);
+        asyncRoomNotifier.updateRoomAvailabilityAsync(roomDto.getId(), false);
         publishEventAfterCommit(reservation);
-        try {
-            roomClient.updateAvailability(dto.getRoomId(), false);
-        } catch (Exception e) {
-            log.error("Room availability update failed for roomId {}: {}", dto.getRoomId(), e.getMessage());
-            // TODO: Retry mekanizması veya mesaj kuyruğuna gönderim
-        }
+
 
         return ReservationMapper.toDto(reservation);
     }

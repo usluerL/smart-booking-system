@@ -21,9 +21,9 @@ import java.util.List;
 public class Hotel extends BaseEntity {
 
     @Column(nullable = false)
-    private String name;
-    @Column(nullable = false)
     private String city;
+    @Column(nullable = false)
+    private String name;
     @Column(nullable = false)
     private String address;
     @Min(1) @Max(5)  @Column(nullable = false)
