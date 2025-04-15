@@ -90,6 +90,7 @@ public class ReservationServiceImpl implements ReservationService {
         publishEventAfterCommit(reservation);
 
 
+        //todo : retry.
         return ReservationMapper.toDto(reservation);
     }
 
@@ -132,7 +133,7 @@ public class ReservationServiceImpl implements ReservationService {
         existing.setCheckOut(dto.getCheckOut());
 
         long days = ChronoUnit.DAYS.between(dto.getCheckIn(), dto.getCheckOut());
-        BigDecimal price = BigDecimal.valueOf(500); // mock fiyat
+        BigDecimal price = BigDecimal.valueOf(500); // mock price
         existing.setTotalPrice(price.multiply(BigDecimal.valueOf(days)));
 
         existing.setStatus(dto.getStatus() != null ? dto.getStatus() : existing.getStatus());

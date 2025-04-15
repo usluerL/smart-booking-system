@@ -26,6 +26,10 @@ spring:
           uri: lb://BOOKING-COMPOSITION-SERVICE
           predicates:
             - Path=/compose/**
+        - id: search-service
+          uri: lb://SEARCH-SERVICE
+          predicates:
+            - Path=/search/**
 
 eureka:
   client:
