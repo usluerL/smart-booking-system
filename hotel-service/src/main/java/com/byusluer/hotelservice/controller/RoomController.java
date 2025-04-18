@@ -4,12 +4,14 @@ import com.byusluer.hotelservice.dto.RoomDto;
 import com.byusluer.hotelservice.service.RoomService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+@Slf4j
 @RestController
 @RequestMapping("/rooms")
 @RequiredArgsConstructor
@@ -40,6 +42,8 @@ public class RoomController {
 
     @GetMapping("/all")
     public ResponseEntity<List<RoomDto>> getAll() {
+        log.info("RoomService.getAll() worked.");
+
         return ResponseEntity.ok(roomService.getAll());
     }
 

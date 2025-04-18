@@ -10,6 +10,8 @@ import lombok.*;
 @NoArgsConstructor
 @Builder
 @Entity
+@Table(name = "rooms")
+
 public class Room extends BaseEntity {
     @Column(nullable = false)
     private String roomNumber;
