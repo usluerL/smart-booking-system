@@ -20,7 +20,7 @@ public class RoomDto {
     private String roomNumber;
 
     @NotNull(message = "Room type is required")
-    private RoomType type;
+    private RoomType roomType;
 
     @NotNull
     @Positive(message = "Price must be positive")

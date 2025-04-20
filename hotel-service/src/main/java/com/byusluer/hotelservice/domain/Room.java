@@ -18,7 +18,7 @@ public class Room extends BaseEntity {
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
-    RoomType  type; // e.g., SINGLE, DOUBLE, SUITE
+    RoomType  roomType; // e.g., SINGLE, DOUBLE, SUITE
 
     @Column(nullable = false)
     private Double pricePerNight;

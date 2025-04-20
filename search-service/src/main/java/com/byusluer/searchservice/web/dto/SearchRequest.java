@@ -24,6 +24,23 @@ public class SearchRequest {
     @Max(value = 100, message = "Size cannot be more than 100")
     private Integer size;
 
-    private String sort;
+    private String direction; // asc or desc
+    private String sortBy;
+
+    public Integer getPage() {
+        return page != null ? page : 0;
+    }
+
+    public Integer getSize() {
+        return size != null ? size : 10;
+    }
+
+    public String getDirection() {
+        return direction != null ? direction : "DESC";
+    }
+
+    public String getSortBy() {
+        return sortBy != null ? sortBy : "id";
+    }
 
 }

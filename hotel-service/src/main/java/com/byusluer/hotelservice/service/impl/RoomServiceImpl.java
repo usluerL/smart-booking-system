@@ -43,7 +43,7 @@ public class RoomServiceImpl implements RoomService {
                 .orElseThrow(() -> new HotelNotFoundException(dto.getHotelId()));
 
         room.setRoomNumber(dto.getRoomNumber());
-        room.setType(dto.getType());
+        room.setRoomType(dto.getRoomType());
         room.setPricePerNight(dto.getPricePerNight());
         room.setAvailable(dto.isAvailable());
         room.setHotel(hotel);

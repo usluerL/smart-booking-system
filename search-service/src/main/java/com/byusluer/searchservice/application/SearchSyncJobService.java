@@ -29,7 +29,7 @@ public class SearchSyncJobService {
 
     @Scheduled(cron = "0 0 */12 * * *")  //
     public void sync() {
-        log.info(" [🔥SEARCH-JOB] Search data sync started.");
+        log.info(" [🔎 SEARCH-JOB] Search data sync started.");
 
         List<HotelDto> hotels = hotelClient.getAllHotels();
         List<RoomDto> rooms = roomClient.getAllRooms();
@@ -37,7 +37,7 @@ public class SearchSyncJobService {
 
         List<SearchEntry> entries = buildEntries(hotels, rooms, reservations);
 
-        Set<String> existingKeys = searchEntryRepository.getAllKeyHashes();
+       Set<String> existingKeys = searchEntryRepository.getAllKeyHashes();
 
         List<SearchEntry> newEntries = entries.stream()
                 .filter(entry -> {

@@ -16,7 +16,7 @@ public class RoomMapper {
         Room room = new Room();
         room.setId(dto.getId());
         room.setRoomNumber(dto.getRoomNumber());
-        room.setType(dto.getType());
+        room.setRoomType(dto.getRoomType());
         room.setPricePerNight(dto.getPricePerNight());
         room.setAvailable(dto.isAvailable());
         room.setHotel(hotel);
@@ -29,7 +29,7 @@ public class RoomMapper {
         return RoomDto.builder()
                 .id(room.getId())
                 .roomNumber(room.getRoomNumber())
-                .type(room.getType())
+                .roomType(room.getRoomType())
                 .pricePerNight(room.getPricePerNight())
                 .isAvailable(room.isAvailable())
                 .hotelId(room.getHotel().getId())
