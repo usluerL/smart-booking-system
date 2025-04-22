@@ -1,6 +1,6 @@
 # 🏨 Smart Booking System (V1)
 
-A microservice-based hotel booking platform built with Spring Boot and Clean Architecture principles.
+A microservice-based hotel booking platform built with Spring Boot/Cloud and Clean Architecture principles.
 
 ---
 
@@ -12,18 +12,30 @@ A microservice-based hotel booking platform built with Spring Boot and Clean Arc
 - Clean Architecture (application/domain/infrastructure/web)
 - Centralized configuration with Spring Cloud Config
 - Service Discovery with Eureka
-- PostgreSQL with Flyway migrations
+- PostgreSQL with Flyway migration scripts
 - Dockerized services with Docker Compose
 - Feign Clients for inter-service communication
-- BaseEntity abstraction for timestamps
+- BaseEntity abstraction for auditing
 - Global Exception Handling with @ControllerAdvice
 - REST endpoints with consistent `/api/v1/` pathing
 
 ### 🧩 Microservices
 - **hotel-service**: Manages hotel and embedded room CRUD
-- **reservation-service**: Handles reservations and status
-- **search-service**: Syncs and stores denormalized data for querying
+- **reservation-service**: Handles reservations and status, along with specific business rules/ use-cases
+- **search-service**: Syncs and stores denormalized data for querying, criteria builder, dynamic filtering
 - **notification-service**: Kafka listener that sends email notifications based on reservation events
+- **composite-service (planned)**: Lays groundwork for API Composition pattern by aggregating data from hotel, room, and reservation services
+- **Saga Pattern Ready (orchestration)**: Architecture supports eventual consistency workflows (e.g., distributed transaction boundaries in reservation flows)
+
+### 🌐 API Gateway
+- Spring Cloud Gateway used for centralized routing and filtering
+- Path-based access routing for microservices
+- Role-based access control per route
+- JWT token validation and forwarding
+
+### 📘 API Documentation
+- Swagger / OpenAPI enabled via SpringDoc
+- Docs available at `/swagger-ui.html` for all services
 
 ### 🔍 Search Service
 - Denormalized `search_entries` table combining hotel, room, and reservation data
