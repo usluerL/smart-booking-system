@@ -40,10 +40,19 @@ A microservice-based hotel booking platform built with Spring Boot and Clean Arc
 - Docker Compose orchestration
 - Spring Boot Actuator for health checks
 
+
 ### 📡 Kafka Integration
 - Kafka used for event-driven reservation updates
 - `notification-service` listens to Kafka topic and is ready to send emails
 
+### 🔐 Security
+- Keycloak integration for OAuth2 authentication
+- Role-based access control with Spring Cloud Gateway
+- JWT token parsing and validation using `realm_access.roles`
+- Custom `JwtAuthenticationConverter` to extract roles from token
+- Path-based access control (e.g., `/hotels/**` requires `ROLE_ADMIN`)
+- Spring Security logs enabled for debugging authorization flow
+- Postman automated token injection via scripting
 ---
 
 ## 🛠️ V2 Roadmap
