@@ -1,15 +1,17 @@
-version: '3.8'
+
 
 services:
   config-server:
     build:
-      context: ./config-server
+      context: .
+      dockerfile: config-server/Dockerfile
     ports:
       - "8888:8888"
 
-  discovery-server:
+  discovery-service:
     build:
-      context: ./discovery-server
+      context: .
+      dockerfile: discovery-service/Dockerfile
     ports:
       - "8761:8761"
     depends_on:
@@ -17,64 +19,70 @@ services:
 
   api-gateway:
     build:
-      context: ./api-gateway
+      context: .
+      dockerfile: api-gateway/Dockerfile
     ports:
       - "8080:8080"
     depends_on:
       - config-server
-      - discovery-server
+      - discovery-service
 
   hotel-service:
     build:
-      context: ./hotel-service
+      context: .
+      dockerfile: hotel-service/Dockerfile
     ports:
       - "8081:8081"
     depends_on:
       - config-server
-      - discovery-server
+      - discovery-service
       - api-gateway
       - postgres
 
   reservation-service:
     build:
-      context: ./reservation-service
+      context: .
+      dockerfile: reservation-service/Dockerfile
     ports:
       - "8082:8082"
     depends_on:
       - config-server
-      - discovery-server
+      - discovery-service
       - api-gateway
       - postgres
       - kafka
 
   search-service:
     build:
-      context: ./search-service
+      context: .
+      dockerfile: search-service/Dockerfile
     ports:
       - "8100:8100"
     depends_on:
       - config-server
-      - discovery-server
+      - discovery-service
       - api-gateway
       - postgres
 
   notification-service:
     build:
-      context: ./notification-service
+      context: .
+      dockerfile: notification-service/Dockerfile
     ports:
       - "8085:8080"
     depends_on:
       - config-server
-      - discovery-server
+      - discovery-service
       - kafka
 
   booking-composition-service:
     build:
-      context: ./booking-composition-service
+      context: .
+      dockerfile: booking-composition-service/Dockerfile
     ports:
       - "8086:8086"
     depends_on:
       - config-server
-      - discovery-server
+      - discovery-service
       - api-gateway
       - postgres

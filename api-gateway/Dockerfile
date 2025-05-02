@@ -2,8 +2,7 @@ FROM maven:3.9.6-eclipse-temurin-21 AS build
 WORKDIR /app
 
 COPY . .
-WORKDIR /app/api-gateway
-RUN mvn clean package -DskipTests
+RUN mvn clean install -DskipTests -pl api-gateway -am
 
 FROM eclipse-temurin:21-jdk-alpine
 WORKDIR /app
