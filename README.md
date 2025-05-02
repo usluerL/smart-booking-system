@@ -6,6 +6,8 @@ A microservice-based hotel booking platform built with Spring Boot/Cloud and Cle
 
 ## ✅ Features Implemented (V1)
 
+
+
 ### 🔧 Architecture & Stack
 - Java 21 + Spring Boot 3.4.4
 - Modular monorepo structure
@@ -66,6 +68,13 @@ A microservice-based hotel booking platform built with Spring Boot/Cloud and Cle
 - Spring Security logs enabled for debugging authorization flow
 - Postman automated token injection via scripting
 ---
+
+### 🛠️ Infrastructure & CI/CD Enhancements
+- Optimized Dockerfiles with multi-stage builds
+- `.dockerignore` implemented for faster builds
+- Unified `app-compose.yml` orchestrating all services
+- Ready for GitHub Actions-based CI/CD pipeline
+- Centralized build context cleanup and caching improvements
 
 ## 🛠️ V2 Roadmap
 
