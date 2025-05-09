@@ -4,14 +4,12 @@ server:
 spring:
   application:
     name: config-server
-  profiles:
-    active: native
+
   cloud:
     config:
       server:
         native:
-          search-locations: file:///Users/lutfiusluer/development/projects/smart-booking-system/config-server/src/main/resources/config-repo
-
+          search-locations: file:///Users/lutfiusluer/development/projects/smart-booking-system/config-server/src/main/resources/config-repo/env/{profile}
 
 eureka:
   client:

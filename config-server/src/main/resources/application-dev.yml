@@ -1,0 +1,16 @@
+server:
+  port: 8888
+
+spring:
+  application:
+    name: config-server
+  cloud:
+    config:
+      server:
+        native:
+          search-locations: file:///Users/lutfiusluer/development/projects/smart-booking-system/config-server/src/main/resources/config-repo.envs/{profile}
+
+eureka:
+  client:
+    service-url:
+      defaultZone: http://discovery-service:8761/eureka
