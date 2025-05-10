@@ -1,0 +1,9 @@
+spring:
+  application:
+    name: booking-composition-service
+  autoconfigure:
+    exclude:
+      - org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration
+      - org.springframework.boot.autoconfigure.orm.jpa.HibernateJpaAutoConfiguration
+  config:
+    import: optional:configserver:http://config-server:8888
