@@ -3,7 +3,6 @@ WORKDIR /app
 
 COPY . .
 
-COPY .m2 /root/.m2
 
 WORKDIR /app/reservation-service
 
