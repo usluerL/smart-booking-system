@@ -1,14 +1,13 @@
+# Build stage
 FROM maven:3.9.6-eclipse-temurin-21 AS build
 WORKDIR /app
-
+COPY pom.xml .
+RUN mvn dependency:go-offline
 COPY . .
-RUN mvn clean install -DskipTests -pl api-gateway -am
+RUN mvn clean package -DskipTests
 
-FROM eclipse-temurin:21-jdk-alpine
+# Run stage
+FROM eclipse-temurin:21
 WORKDIR /app
-
-COPY --from=build /app/api-gateway/target/*.jar app.jar
-
-EXPOSE 8080
-
+COPY --from=build /app/target/api-gateway-*.jar app.jar
 ENTRYPOINT ["java", "-jar", "app.jar"]

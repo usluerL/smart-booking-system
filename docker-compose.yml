@@ -23,17 +23,17 @@ services:
     networks:
       - booking-net
 
-  gateway-service:
+  api-gateway:
     build:
       context: .
-      dockerfile: gateway-service/Dockerfile
+      dockerfile: api-gateway/Dockerfile
     ports:
       - "8080:8080"
     depends_on:
       - config-server
       - discovery-service
     environment:
-      - SPRING_PROFILES_ACTIVE=dev
+      - SPRING_PROFILES_ACTIVE=dev,native
     networks:
       - booking-net
 
