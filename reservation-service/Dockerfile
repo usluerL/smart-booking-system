@@ -5,14 +5,14 @@ COPY . .
 
 COPY .m2 /root/.m2
 
-WORKDIR /app/hotel-service
+WORKDIR /app/reservation-service
 
 RUN mvn clean package -DskipTests -Dmaven.repo.local=/root/.m2/repository
 
 FROM eclipse-temurin:21-jdk-alpine
 WORKDIR /app
 
-COPY --from=build /app/hotel-service/target/*.jar app.jar
+COPY --from=build /app/reservation-service/target/*.jar app.jar
 
 EXPOSE 8082
 

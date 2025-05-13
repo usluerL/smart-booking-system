@@ -70,6 +70,9 @@ A microservice-based hotel booking platform built with Spring Boot/Cloud and Cle
 ---
 
 ### 🛠️ Infrastructure & CI/CD Enhancements
+- Profile-based configuration loading (`local`, `dev`) with Git-backed config-server
+- External Docker network (`booking-net`) for inter-service DNS resolution
+- Optimized `app-compose.yml` and `infra-compose.yml` separation for flexible deployment
 - Optimized Dockerfiles with multi-stage builds
 - `.dockerignore` implemented for faster builds
 - Unified `app-compose.yml` orchestrating all services
